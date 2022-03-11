@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import CardMedia from "@mui/material/CardMedia";
 import Box from "@mui/material/Box";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const AuthenticateCard = ({ image, text, content }) => {
   return (
@@ -32,7 +34,12 @@ const AuthenticateCard = ({ image, text, content }) => {
             type="submit"
             variant="contained"
           >
-            Log in
+            <Link
+              style={{ textDecoration: "none", color: "white" }}
+              to="/login"
+            >
+              Log in
+            </Link>
           </Button>
         </Box>
       </CardActions>
