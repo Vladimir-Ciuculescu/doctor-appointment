@@ -21,7 +21,7 @@ const LoginForm = () => {
       justify="center"
       style={{ minHeight: "100vh" }}
     >
-      <Card sx={{ width: "15%" }}>
+      <Card sx={{ width: "300px" }}>
         <CardContent>
           <Typography align="center" gutterBottom variant="h5" component="div">
             Log in

@@ -1,22 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Header from "./components/Header";
-import LoginDoctor from "./pages/LoginDoctor";
-import RegisterdDoctor from "./pages/RegisterDoctor";
+
+import { Provider } from "react-redux";
+import { store, persistor } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+
+//const user = useSelector((state) => state.userReducer);
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Header />
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/login" element={<LoginDoctor />} />
-      <Route path="/register" element={<RegisterdDoctor />} />
-    </Routes>
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <PersistGate persistor={persistor}>
+        <App />
+      </PersistGate>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
 
