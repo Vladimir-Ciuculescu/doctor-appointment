@@ -1,10 +1,9 @@
 import React from "react";
-import { Box, Grid } from "@mui/material";
-import AuthenticateCard from "./components/AuthenticateCard";
+import { Box } from "@mui/material";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
-import { CssBaseline, Modal, Backdrop, Fade, Typography } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import LoginDoctor from "./pages/LoginDoctor";
 import RegisterDoctor from "./pages/RegisterDoctor";
 import HomePage from "./pages/HomePage";
@@ -13,6 +12,7 @@ import LoginOptions from "./components/LoginOptions";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageNotFound from "./pages/PageNotFound";
 import SignOutModal from "./components/SignOutModal";
+import SearchDoctorPage from "./pages/SearchDoctorPage";
 
 const App = () => {
   const user = useSelector((state) => state.userReducer);
@@ -33,6 +33,10 @@ const App = () => {
             user.user ? <Navigate replace to="/home" /> : <LoginOptions />
           }
         />
+
+        <Route exact path="/login" element={<LoginDoctor />} />
+        <Route exact path="/register" element={<RegisterDoctor />} />
+        <Route path="*" element={<PageNotFound />} />
         <Route
           exact
           path="/home"
@@ -42,9 +46,15 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route exact path="/login" element={<LoginDoctor />} />
-        <Route exact path="/register" element={<RegisterDoctor />} />
-        <Route path="*" element={<PageNotFound />} />
+        <Route
+          exact
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <SearchDoctorPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );

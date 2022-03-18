@@ -9,25 +9,20 @@ import {
   Box,
   ListItemText,
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+
 import PersonIcon from "@mui/icons-material/Person";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import BookOnlineIcon from "@mui/icons-material/BookOnline";
 import UndoIcon from "@mui/icons-material/Undo";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
-const patientOptions = [
-  "Personal Details",
-  "Search Doctor",
-  "Appointment Status",
-  "Previous Appointments",
-];
-
 const Menu = () => {
   const user = useSelector((state) => state.userReducer);
+
+  const navigate = useNavigate();
 
   if (user.user) {
     return (
@@ -45,22 +40,30 @@ const Menu = () => {
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            {patientOptions.map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {text === "Personal Details" ? (
-                    <PersonIcon />
-                  ) : text === "Search Doctor" ? (
-                    <LocalHospitalIcon />
-                  ) : text === "Appointment Status" ? (
-                    <BookOnlineIcon />
-                  ) : (
-                    <UndoIcon />
-                  )}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            <ListItem onClick={() => navigate("/home")} button key={1}>
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="Personal Details" />
+            </ListItem>
+            <ListItem onClick={() => navigate("/search")} button key={2}>
+              <ListItemIcon>
+                <LocalHospitalIcon />
+              </ListItemIcon>
+              <ListItemText primary="Search Doctor" />
+            </ListItem>
+            <ListItem button key={3}>
+              <ListItemIcon>
+                <BookOnlineIcon />
+              </ListItemIcon>
+              <ListItemText primary="Appointment Status" />
+            </ListItem>
+            <ListItem button key={4}>
+              <ListItemIcon>
+                <UndoIcon />
+              </ListItemIcon>
+              <ListItemText primary="Previous Appointments" />
+            </ListItem>
           </List>
         </Box>
       </Drawer>
