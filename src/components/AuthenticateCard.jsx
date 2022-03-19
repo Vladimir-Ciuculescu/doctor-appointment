@@ -35,8 +35,6 @@ const AuthenticateCard = ({ image, text, content, path }) => {
         googleProvider.setCustomParameters({ prompt: "select_account" })
       );
 
-      console.log("awdwad", result);
-
       const user = result.user;
       const q = query(collection(db, "pacients"), where("uid", "==", user.uid));
       const docs = await getDocs(q);

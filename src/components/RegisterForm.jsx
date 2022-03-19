@@ -73,6 +73,7 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [toggleModal, setToggleModal] = useState(false);
   const [toggleDoctorExsitent, setToggleDoctorExistent] = useState(false);
+  const [gender, setGender] = useState("");
 
   const RegisterDoctor = async () => {
     setLoading(true);
@@ -87,6 +88,7 @@ const RegisterForm = () => {
           costPerSession: costPerSession,
           specialization: specialization,
           password: password,
+          gender: gender,
         });
 
         setToggleModal(true);
@@ -95,7 +97,6 @@ const RegisterForm = () => {
         setToggleDoctorExistent(true);
       }
     } catch (err) {
-      console.log(err);
       setLoading(false);
     }
   };
@@ -186,6 +187,17 @@ const RegisterForm = () => {
               </Grid>
               <Grid item xs={6}>
                 <TextField
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  mt={10}
+                  id="Password"
+                  label="Password"
+                  variant="outlined"
+                  type="password"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   mt={10}
@@ -196,7 +208,7 @@ const RegisterForm = () => {
                 />
               </Grid>
               <Grid item xs={5}>
-                <FormControl sx={{ m: 1, width: "22ch" }} variant="outlined">
+                <FormControl sx={{ width: "22ch" }} variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">
                     Cost per session
                   </InputLabel>
@@ -242,15 +254,19 @@ const RegisterForm = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
-                <TextField
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  mt={10}
-                  id="Password"
-                  label="Password"
-                  variant="outlined"
-                  type="password"
-                />
+                <FormControl sx={{ width: "22ch" }}>
+                  <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    label="Specialization"
+                  >
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
             <Grid mx={2} mt={2}>
