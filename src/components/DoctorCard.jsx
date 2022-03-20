@@ -8,7 +8,9 @@ import {
   CardMedia,
   Box,
 } from "@mui/material";
-import doctor from "../assets/doctorProfile.png";
+
+import { useDispatch } from "react-redux";
+import { toggleModal } from "../redux/modal/modal";
 
 const DoctorCard = ({
   item: {
@@ -20,6 +22,8 @@ const DoctorCard = ({
     costPerSession,
   },
 }) => {
+  const dispatch = useDispatch();
+
   return (
     <Card sx={{ minHeight: 190, minWidth: 275, display: "flex" }}>
       <Box sx={{ minWidth: "60%" }}>
@@ -65,6 +69,7 @@ const DoctorCard = ({
             justifyContent="center"
           >
             <Button
+              onClick={() => dispatch(toggleModal(true))}
               color="primary"
               type="submit"
               variant="contained"

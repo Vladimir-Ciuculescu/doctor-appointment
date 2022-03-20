@@ -1,5 +1,3 @@
-import { combineReducers } from "redux";
-
 const SET_USER = "SET_USER";
 const REMOVE_USER = "REMOVE_USER";
 
@@ -28,8 +26,10 @@ const userReducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-const userApp = combineReducers({
-  userReducer,
-});
+// const userApp = combineReducers({
+//   userReducer,
+// });
 
-export default userApp;
+// export default userApp;
+
+export default userReducer;
