@@ -8,18 +8,11 @@ import CardMedia from "@mui/material/CardMedia";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth, db } from "../firebase";
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  setDoc,
-  doc,
-} from "firebase/firestore";
+import firebase from "firebase";
+import { db } from "../firebase";
+
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/user/user";
+import { setUser, setEmail } from "../redux/user/user";
 
 const AuthenticateCard = ({ image, text, content, path }) => {
   const dispatch = useDispatch();
@@ -28,28 +21,30 @@ const AuthenticateCard = ({ image, text, content, path }) => {
 
   const signInAsPacient = async () => {
     setLoading(true);
-    try {
-      const googleProvider = new GoogleAuthProvider();
-      const result = await signInWithPopup(
-        auth,
-        googleProvider.setCustomParameters({ prompt: "select_account" })
-      );
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-      const user = result.user;
-      const q = query(collection(db, "pacients"), where("uid", "==", user.uid));
-      const docs = await getDocs(q);
-      if (docs.docs.length === 0) {
-        await setDoc(doc(db, "pacients", user.email), {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-        });
-      }
-      dispatch(setUser(user.displayName));
-      navigate("/home");
-    } catch (err) {
-      setLoading(false);
+    const result = await firebase.auth().signInWithPopup(googleProvider);
+
+    console.log(result);
+
+    const user = result.user;
+
+    const existentAccount = await db
+      .collection("pacients")
+      .doc(user.email)
+      .get();
+
+    if (existentAccount.exists) {
+    } else {
+      await db
+        .collection("pacients")
+        .doc(user.email)
+        .set({ uid: user.uid, name: user.displayName, email: user.email });
     }
+
+    dispatch(setUser(user.displayName));
+    dispatch(setEmail(user.email));
+    navigate("/home");
   };
 
   return (

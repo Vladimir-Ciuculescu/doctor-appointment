@@ -15,16 +15,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import DoctorCard from "../components/DoctorCard";
 import { db } from "../firebase";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleModal } from "../redux/modal/modal";
+import { toggleModal, toggleBookingModal } from "../redux/modal/modal";
 
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  setDoc,
-  doc,
-} from "firebase/firestore";
 import BookingModal from "../components/BookingModal";
 
 const doctorTypes = [
@@ -40,6 +32,8 @@ const doctorTypes = [
 ];
 
 const SearchDoctorPage = () => {
+  const { bookingModal } = useSelector((state) => state.modalReducer);
+
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [input, setInput] = useState("");
@@ -49,72 +43,74 @@ const SearchDoctorPage = () => {
   const dispatch = useDispatch();
 
   const getAllDoctors = async () => {
-    const q = query(collection(db, "doctors"));
-    const docs = await getDocs(q);
-
-    docs.docs.map((item) => {
-      setDoctors((oldDoctors) => [
-        ...oldDoctors,
-
-        item.data().displayName.toLowerCase(),
-      ]);
-      setFilteredDoctors((oldDoctors) => [
-        ...oldDoctors,
-        {
-          displayName: item.data().displayName,
-          email: item.data().email,
-          specialization: item.data().specialization,
-          phoneNumber: item.data().phoneNumber,
-          costPerSession: item.data().costPerSession,
-          gender: item.data().gender,
-        },
-      ]);
-    });
+    await db
+      .collection("doctors")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          setDoctors((oldDoctors) => [
+            ...oldDoctors,
+            doc.data().displayName.toLowerCase(),
+          ]);
+          setFilteredDoctors((oldDoctors) => [
+            ...oldDoctors,
+            {
+              displayName: doc.data().displayName,
+              email: doc.data().email,
+              specialization: doc.data().specialization,
+              phoneNumber: doc.data().phoneNumber,
+              costPerSession: doc.data().costPerSession,
+              gender: doc.data().gender,
+            },
+          ]);
+        });
+      });
   };
 
   const getFilteredDoctors = async () => {
     setLoading(true);
     const filteredNames = doctors.filter((item) => item.includes(input));
 
+    const filteredCopies = filteredDoctors;
+
     let q;
 
     if (specialization !== "" && input === "") {
-      q = query(
-        collection(db, "doctors"),
-        where("specialization", "==", specialization)
-      );
+      q = await db
+        .collection("doctors")
+        .where("specialization", "==", specialization)
+        .get();
     } else if (specialization === "" && input !== "") {
-      q = query(
-        collection(db, "doctors"),
-
-        where("displayName", "in", filteredNames)
-      );
+      q = await db
+        .collection("doctors")
+        .where("displayName", "in", filteredDoctors)
+        .get();
     } else if (specialization !== "" && input !== "") {
-      q = query(
-        collection(db, "doctors"),
-        where("displayName", "in", filteredNames),
-        where("specialization", "==", specialization)
-      );
+      q = await db
+        .collection("doctors")
+        .where("displayName", "in", filteredNames)
+        .where("specialization", "==", specialization)
+        .get();
+    } else if (specialization === "" && input === "") {
+      q = await db.collection("doctors").get();
     }
-
-    const docs = await getDocs(q);
 
     setFilteredDoctors([]);
 
-    docs.docs.map((item) => {
-      console.log(item.data());
+    q.docs.forEach((doc) => {
       setFilteredDoctors((oldFiltered) => [
         ...oldFiltered,
         {
-          displayName: item.data().displayName,
-          email: item.data().email,
-          specialization: item.data().specialization,
-          phoneNumber: item.data().phoneNumber,
-          costPerSession: item.data().costPerSession,
-          gender: item.data().gender,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          specialization: doc.data().specialization,
+          phoneNumber: doc.data().phoneNumber,
+          costPerSession: doc.data().costPerSession,
+          gender: doc.data().gender,
         },
       ]);
     });
+
     setLoading(false);
   };
 
@@ -137,7 +133,7 @@ const SearchDoctorPage = () => {
       justify="center"
       style={{ minHeight: "100vh" }}
     >
-      <Box mt={-0.5} sx={{ width: "60%", position: "fixed" }}>
+      <Box mt={-0.5} sx={{ width: "60%" }}>
         <FormControl sx={{ width: "22ch" }}>
           <InputLabel id="demo-simple-select-label">Specialization</InputLabel>
           <Select
@@ -156,32 +152,7 @@ const SearchDoctorPage = () => {
           </Select>
         </FormControl>
       </Box>
-      <Paper
-        component="form"
-        sx={{
-          position: "fixed",
-          p: "2px 4px",
-          display: "flex",
-          alignItems: "center",
-          width: 400,
-        }}
-      >
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Search Doctor"
-          inputProps={{ "aria-label": "search google maps" }}
-          value={input}
-          onChange={(e) => setInput(e.target.value.toLowerCase())}
-        />
-        <IconButton
-          disabled
-          type="submit"
-          sx={{ p: "10px" }}
-          aria-label="search"
-        >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
+
       <Box mt={10} sx={{ alignItems: "center", width: "60%" }}>
         <Grid
           alignItems="center"

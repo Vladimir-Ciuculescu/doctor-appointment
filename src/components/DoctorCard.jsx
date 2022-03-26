@@ -11,6 +11,7 @@ import {
 
 import { useDispatch } from "react-redux";
 import { toggleModal } from "../redux/modal/modal";
+import { setDoctor, setDoctorName } from "../redux/doctor/doctor";
 
 const DoctorCard = ({
   item: {
@@ -69,7 +70,11 @@ const DoctorCard = ({
             justifyContent="center"
           >
             <Button
-              onClick={() => dispatch(toggleModal(true))}
+              onClick={() => {
+                dispatch(toggleModal(true));
+                dispatch(setDoctor(email));
+                dispatch(setDoctorName(displayName));
+              }}
               color="primary"
               type="submit"
               variant="contained"

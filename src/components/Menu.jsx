@@ -52,11 +52,15 @@ const Menu = () => {
               </ListItemIcon>
               <ListItemText primary="Search Doctor" />
             </ListItem>
-            <ListItem button key={3}>
+            <ListItem
+              onClick={() => navigate("/appointment-status")}
+              button
+              key={3}
+            >
               <ListItemIcon>
                 <BookOnlineIcon />
               </ListItemIcon>
-              <ListItemText primary="Appointment Status" />
+              <ListItemText primary="Your appointments" />
             </ListItem>
             <ListItem button key={4}>
               <ListItemIcon>

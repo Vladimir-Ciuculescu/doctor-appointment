@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PageNotFound from "./pages/PageNotFound";
 import SignOutModal from "./components/SignOutModal";
 import SearchDoctorPage from "./pages/SearchDoctorPage";
+import ApppointmentStatusPage from "./pages/AppointmentStatusPage";
 
 const App = () => {
   const user = useSelector((state) => state.userReducer);
@@ -52,6 +53,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <SearchDoctorPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/appointment-status"
+          element={
+            <ProtectedRoute>
+              <ApppointmentStatusPage />
             </ProtectedRoute>
           }
         />

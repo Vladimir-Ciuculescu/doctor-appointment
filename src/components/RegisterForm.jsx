@@ -26,14 +26,7 @@ import { EuroOutlined } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  setDoc,
-  doc,
-} from "firebase/firestore";
+
 import { useNavigate } from "react-router-dom";
 
 const doctorTypes = [
@@ -77,11 +70,17 @@ const RegisterForm = () => {
 
   const RegisterDoctor = async () => {
     setLoading(true);
-    try {
-      const q = query(collection(db, "doctors"), where("email", "==", email));
-      const docs = await getDocs(q);
-      if (docs.docs.length === 0) {
-        await setDoc(doc(db, "doctors", email), {
+
+    const existentDoctor = await db.collection("doctors").doc(email).get();
+
+    if (existentDoctor.exists) {
+      setToggleDoctorExistent(true);
+      setLoading(false);
+    } else {
+      await db
+        .collection("doctors")
+        .doc(email)
+        .set({
           displayName: name + " " + surName,
           email: email,
           phoneNumber: phoneNumber,
@@ -90,14 +89,8 @@ const RegisterForm = () => {
           password: password,
           gender: gender,
         });
-
-        setToggleModal(true);
-      } else {
-        setLoading(false);
-        setToggleDoctorExistent(true);
-      }
-    } catch (err) {
       setLoading(false);
+      setToggleModal(true);
     }
   };
 
@@ -292,6 +285,16 @@ const RegisterForm = () => {
                 variant="contained"
                 onClick={() => RegisterDoctor()}
                 loading={loading}
+                disabled={
+                  name === "" ||
+                  surName === "" ||
+                  email === "" ||
+                  password === "" ||
+                  phoneNumber === "" ||
+                  costPerSession === null ||
+                  specialization === "" ||
+                  gender === ""
+                }
               >
                 Sign Up
               </LoadingButton>
