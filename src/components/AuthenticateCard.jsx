@@ -11,8 +11,8 @@ import { Link, useNavigate } from "react-router-dom";
 import firebase from "firebase";
 import { db } from "../firebase";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setUser, setEmail } from "../redux/user/user";
+import { useDispatch } from "react-redux";
+import { setUser, setEmail, setUserType } from "../redux/user/user";
 
 const AuthenticateCard = ({ image, text, content, path }) => {
   const dispatch = useDispatch();
@@ -43,6 +43,7 @@ const AuthenticateCard = ({ image, text, content, path }) => {
     }
 
     dispatch(setUser(user.displayName));
+    dispatch(setUserType("pacient"));
     dispatch(setEmail(user.email));
     navigate("/home");
   };

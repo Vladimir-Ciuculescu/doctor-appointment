@@ -11,15 +11,15 @@ import Medlife from "../assets/MedLife.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { removeUser } from "../redux/user/user";
+import { toggleSignOutModal } from "../redux/modal/modal";
 
 const Header = () => {
   const user = useSelector((state) => state.userReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const SignOut = () => {
-    dispatch(removeUser());
-    navigate("/");
+  const toggleModal = () => {
+    dispatch(toggleSignOutModal(true));
   };
   return (
     <AppBar
@@ -45,7 +45,11 @@ const Header = () => {
             <Typography sx={{ mt: 0.5 }}>{user.user}</Typography>
           </Box>
           {user.user ? (
-            <Button variant="contained" color="info" onClick={() => SignOut()}>
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => toggleModal()}
+            >
               Sign out
             </Button>
           ) : null}

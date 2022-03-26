@@ -8,6 +8,10 @@ import {
   Button,
   Grid,
 } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleSignOutModal } from "../redux/modal/modal";
+import { removeUser } from "../redux/user/user";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -22,18 +26,28 @@ const style = {
 };
 
 const SignOutModal = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { signOutModal } = useSelector((state) => state.modalReducer);
+
+  const signOut = () => {
+    dispatch(toggleSignOutModal(false));
+    dispatch(removeUser());
+    navigate("/");
+  };
+
   return (
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
-      open={false}
+      open={signOutModal}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-      <Fade in={false}>
+      <Fade in={signOutModal}>
         <Box sx={style}>
           <Typography
             align="center"
@@ -50,10 +64,17 @@ const SignOutModal = () => {
             justifyContent="center"
           >
             <Grid item>
-              <Button variant="contained">Yes</Button>
+              <Button variant="contained" onClick={() => signOut()}>
+                Yes
+              </Button>
             </Grid>
             <Grid item>
-              <Button variant="contained">No</Button>
+              <Button
+                onClick={() => dispatch(toggleSignOutModal(false))}
+                variant="contained"
+              >
+                No
+              </Button>
             </Grid>
           </Grid>
         </Box>

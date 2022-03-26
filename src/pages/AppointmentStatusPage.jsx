@@ -10,9 +10,10 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -29,6 +30,26 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
   },
 }));
 
@@ -95,24 +116,24 @@ const ApppointmentStatusPage = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Time </TableCell>
-                <TableCell>Doctor name</TableCell>
-                <TableCell></TableCell>
+                <StyledTableCell>Date</StyledTableCell>
+                <StyledTableCell>Time </StyledTableCell>
+                <StyledTableCell>Doctor name</StyledTableCell>
+                <StyledTableCell>Actions</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {appointments.map((row) => (
-                <TableRow
+                <StyledTableRow
                   key={row.slot}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell component="th" scope="row">
+                  <StyledTableCell>{row.date}</StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
                     {row.slot}
-                  </TableCell>
-                  <TableCell>{row.doctor}</TableCell>
-                  <TableCell>
+                  </StyledTableCell>
+                  <StyledTableCell>{row.doctor}</StyledTableCell>
+                  <StyledTableCell>
                     <IconButton
                       onClick={() => {
                         setToggleModal(true);
@@ -121,8 +142,8 @@ const ApppointmentStatusPage = () => {
                     >
                       <DeleteForeverIcon sx={{ color: pink[500] }} />
                     </IconButton>
-                  </TableCell>
-                </TableRow>
+                  </StyledTableCell>
+                </StyledTableRow>
               ))}
             </TableBody>
           </Table>
