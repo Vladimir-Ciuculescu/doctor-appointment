@@ -130,7 +130,6 @@ const BookingModal2 = () => {
       docRef.data().slots.map((item) => {
         setSlots((oldArray) => [...oldArray, item.slot]);
       });
-      //setSlots(docRef.data().slots);
     }
 
     setToggleSlots(true);
@@ -160,13 +159,13 @@ const BookingModal2 = () => {
             monthNames[bookDate.getMonth()]
           } ${bookDate.getFullYear()}`
         )
-        //.set({ slots: [slot] });
         .set({
           slot: slot,
           doctor: doctorName,
           date: `${bookDate.getDate()} ${
             monthNames[bookDate.getMonth()]
           } ${bookDate.getFullYear()}`,
+          status: "pending",
         });
 
       await db
@@ -182,6 +181,7 @@ const BookingModal2 = () => {
           slots: firebase.firestore.FieldValue.arrayUnion({
             name: user,
             slot: slot,
+            status: "pending",
           }),
         });
 

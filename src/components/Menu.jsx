@@ -65,12 +65,6 @@ const Menu = () => {
                 </ListItemIcon>
                 <ListItemText primary="Your appointments  " />
               </ListItem>
-              <ListItem button key={4}>
-                <ListItemIcon>
-                  <UndoIcon />
-                </ListItemIcon>
-                <ListItemText primary="Previous Appointments" />
-              </ListItem>
             </List>
           ) : (
             <List>
@@ -90,12 +84,6 @@ const Menu = () => {
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary="Personal Details" />
-              </ListItem>
-              <ListItem button key={4}>
-                <ListItemIcon>
-                  <UndoIcon />
-                </ListItemIcon>
-                <ListItemText primary="Previous Appointments" />
               </ListItem>
             </List>
           )}

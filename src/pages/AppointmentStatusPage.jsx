@@ -81,6 +81,7 @@ const ApppointmentStatusPage = () => {
             doctor: doc.data().doctor,
             slot: doc.data().slot,
             date: doc.data().date,
+            status: doc.data().status,
           },
         ]);
       });
@@ -109,6 +110,7 @@ const ApppointmentStatusPage = () => {
             slots: firebase.firestore.FieldValue.arrayRemove({
               name: user,
               slot: interval,
+              status: "pending",
             }),
           });
 
@@ -147,6 +149,7 @@ const ApppointmentStatusPage = () => {
                 <StyledTableCell>Date</StyledTableCell>
                 <StyledTableCell>Time </StyledTableCell>
                 <StyledTableCell>Doctor name</StyledTableCell>
+                <StyledTableCell>Status</StyledTableCell>
                 <StyledTableCell>Actions</StyledTableCell>
               </TableRow>
             </TableHead>
@@ -161,6 +164,7 @@ const ApppointmentStatusPage = () => {
                     {row.slot}
                   </StyledTableCell>
                   <StyledTableCell>{row.doctor}</StyledTableCell>
+                  <StyledTableCell>{row.status}</StyledTableCell>
                   <StyledTableCell>
                     <IconButton
                       onClick={() => {
