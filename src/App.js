@@ -7,6 +7,7 @@ import { CssBaseline } from "@mui/material";
 import LoginDoctor from "./pages/LoginDoctor";
 import RegisterDoctor from "./pages/RegisterDoctor";
 import HomePage from "./pages/HomePage";
+import SchedulePage from "./pages/SchedulePage";
 import { useSelector } from "react-redux";
 import LoginOptions from "./components/LoginOptions";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -16,7 +17,7 @@ import SearchDoctorPage from "./pages/SearchDoctorPage";
 import ApppointmentStatusPage from "./pages/AppointmentStatusPage";
 
 const App = () => {
-  const user = useSelector((state) => state.userReducer);
+  const { user, userType } = useSelector((state) => state.userReducer);
 
   return (
     <div>
@@ -31,7 +32,14 @@ const App = () => {
           exact
           path="/"
           element={
-            user.user ? <Navigate replace to="/home" /> : <LoginOptions />
+            user ? (
+              <Navigate
+                replace
+                to={userType === "pacient" ? "/home" : "/schedule"}
+              />
+            ) : (
+              <LoginOptions />
+            )
           }
         />
 
@@ -44,6 +52,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/schedule"
+          element={
+            <ProtectedRoute>
+              <SchedulePage />
             </ProtectedRoute>
           }
         />

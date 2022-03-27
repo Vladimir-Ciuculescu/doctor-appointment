@@ -38,7 +38,7 @@ const LoginForm = () => {
         dispatch(setUser(docRef.data().displayName));
         dispatch(setUserType("doctor"));
         dispatch(setEmail(docRef.data().email));
-        navigate("/home");
+        navigate("/schedule");
       } else {
         setMessageError("Credentials not valid !");
         setAlert(true);

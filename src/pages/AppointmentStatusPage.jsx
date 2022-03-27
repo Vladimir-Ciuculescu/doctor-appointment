@@ -23,6 +23,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { pink } from "@mui/material/colors";
 import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
+import firebase from "firebase";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -54,12 +55,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ApppointmentStatusPage = () => {
-  const { email } = useSelector((state) => state.userReducer);
+  const { user, email } = useSelector((state) => state.userReducer);
 
   const [appointments, setAppointments] = useState([]);
   const [toggleModal, setToggleModal] = useState(false);
   const [slot, setSlot] = useState("");
   const [loading, setLoading] = useState(false);
+  const [doctor, setDoctor] = useState("");
+  const [date, setDate] = useState("");
+  const [interval, setInterval] = useState("");
 
   useEffect(() => {
     const getAppointments = async () => {
@@ -70,7 +74,7 @@ const ApppointmentStatusPage = () => {
         .get();
 
       collectionRef.forEach((doc) => {
-        console.log(doc.data());
+        console.log("DOCUMENT DATA", doc.data());
         setAppointments((oldArray) => [
           ...oldArray,
           {
@@ -88,6 +92,30 @@ const ApppointmentStatusPage = () => {
 
   const deleteAppointment = async () => {
     setLoading(true);
+
+    const doctorRef = await db
+      .collection("doctors")
+      .where("displayName", "==", doctor)
+      .get();
+
+    doctorRef.docs.forEach(async (item) => {
+      if (item.data().displayName === doctor) {
+        await db
+          .collection("doctors")
+          .doc(item.data().email)
+          .collection("appointments")
+          .doc(date)
+          .update({
+            slots: firebase.firestore.FieldValue.arrayRemove({
+              name: user,
+              slot: interval,
+            }),
+          });
+
+        console.log(interval);
+      }
+    });
+
     await db
       .collection("pacients")
       .doc(email)
@@ -136,8 +164,11 @@ const ApppointmentStatusPage = () => {
                   <StyledTableCell>
                     <IconButton
                       onClick={() => {
+                        setDate(row.date);
+                        setDoctor(row.doctor);
                         setToggleModal(true);
                         setSlot(row.date);
+                        setInterval(row.slot);
                       }}
                     >
                       <DeleteForeverIcon sx={{ color: pink[500] }} />

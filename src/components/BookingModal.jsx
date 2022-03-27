@@ -85,7 +85,7 @@ const BookingModal2 = () => {
   const [toggleAlert, setToggleAlert] = useState(false);
 
   const dispatch = useDispatch();
-  const { email } = useSelector((state) => state.userReducer);
+  const { user, email } = useSelector((state) => state.userReducer);
   const { hidden } = useSelector((state) => state.modalReducer);
   const { doctor, doctorName } = useSelector((state) => state.doctorReducer);
 
@@ -127,7 +127,10 @@ const BookingModal2 = () => {
         });
       setSlots([]);
     } else {
-      setSlots(docRef.data().slots);
+      docRef.data().slots.map((item) => {
+        setSlots((oldArray) => [...oldArray, item.slot]);
+      });
+      //setSlots(docRef.data().slots);
     }
 
     setToggleSlots(true);
@@ -175,7 +178,12 @@ const BookingModal2 = () => {
             monthNames[bookDate.getMonth()]
           } ${bookDate.getFullYear()}`
         )
-        .update({ slots: firebase.firestore.FieldValue.arrayUnion(slot) });
+        .update({
+          slots: firebase.firestore.FieldValue.arrayUnion({
+            name: user,
+            slot: slot,
+          }),
+        });
 
       setLoading(false);
       setBookStatus(true);
