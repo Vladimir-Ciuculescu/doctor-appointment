@@ -62,7 +62,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const SchedulePage = () => {
-  const { email } = useSelector((state) => state.userReducer);
+  const { user, email } = useSelector((state) => state.userReducer);
   const [todayAppointments, setTodayAppointments] = useState([]);
   const [toggleModal, setToggleModal] = useState(false);
   const [slot, setSlot] = useState(false);
@@ -118,6 +118,25 @@ const SchedulePage = () => {
         }),
       });
 
+    const result = await db
+      .collection("pacients")
+      .where("name", "==", name)
+      .get();
+
+    result.forEach(async (doc) => {
+      await db
+        .collection("pacients")
+        .doc(doc.id)
+        .collection("appointments")
+        .doc(todaySchedule)
+        .update({
+          date: todaySchedule,
+          doctor: user,
+          slot: slot,
+          status: status,
+        });
+    });
+
     setToggleModal(false);
 
     window.location.reload(false);
@@ -134,57 +153,63 @@ const SchedulePage = () => {
       style={{ minHeight: "100vh" }}
     >
       <Box mt={-0.5} ml={5} sx={{ width: "60%", position: "fixed" }}>
-        <h2>{todaySchedule}</h2>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Time </StyledTableCell>
-                <StyledTableCell>Pacient name</StyledTableCell>
-                <StyledTableCell>Status</StyledTableCell>
-                <StyledTableCell>Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {todayAppointments.map((row) => (
-                <StyledTableRow
-                  key={row.slot}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <StyledTableCell>{row.slot}</StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    {row.name}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Chip
-                      label={row.status}
-                      color={
-                        row.status === "pending"
-                          ? "primary"
-                          : row.status === "cancelled"
-                          ? "error"
-                          : "success"
-                      }
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {row.status === "pending" ? (
-                      <IconButton
-                        onClick={() => {
-                          setToggleModal(true);
-                          setSlot(row.slot);
-                          setName(row.name);
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    ) : null}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {todayAppointments && todayAppointments.length > 0 ? (
+          <>
+            <h2>{todaySchedule}</h2>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell>Time </StyledTableCell>
+                    <StyledTableCell>Pacient name</StyledTableCell>
+                    <StyledTableCell>Status</StyledTableCell>
+                    <StyledTableCell>Actions</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {todayAppointments.map((row) => (
+                    <StyledTableRow
+                      key={row.slot}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <StyledTableCell>{row.slot}</StyledTableCell>
+                      <StyledTableCell component="th" scope="row">
+                        {row.name}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <Chip
+                          label={row.status}
+                          color={
+                            row.status === "pending"
+                              ? "primary"
+                              : row.status === "cancelled"
+                              ? "error"
+                              : "success"
+                          }
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        {row.status === "pending" ? (
+                          <IconButton
+                            onClick={() => {
+                              setToggleModal(true);
+                              setSlot(row.slot);
+                              setName(row.name);
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        ) : null}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        ) : (
+          <h2>There are no appointments for today</h2>
+        )}
       </Box>
       <Dialog open={toggleModal}>
         <DialogTitle>

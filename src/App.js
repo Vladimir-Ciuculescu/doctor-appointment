@@ -15,6 +15,7 @@ import PageNotFound from "./pages/PageNotFound";
 import SignOutModal from "./components/SignOutModal";
 import SearchDoctorPage from "./pages/SearchDoctorPage";
 import ApppointmentStatusPage from "./pages/AppointmentStatusPage";
+import DoctorDetails from "./pages/DoctorDetailsPage";
 
 const App = () => {
   const { user, userType } = useSelector((state) => state.userReducer);
@@ -52,6 +53,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/doctor-details"
+          element={
+            <ProtectedRoute>
+              <DoctorDetails />
             </ProtectedRoute>
           }
         />

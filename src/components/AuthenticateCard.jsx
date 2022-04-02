@@ -25,8 +25,6 @@ const AuthenticateCard = ({ image, text, content, path }) => {
 
     const result = await firebase.auth().signInWithPopup(googleProvider);
 
-    console.log(result);
-
     const user = result.user;
 
     const existentAccount = await db

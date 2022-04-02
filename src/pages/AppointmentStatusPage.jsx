@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogActions,
   Button,
+  Chip,
 } from "@mui/material";
 
 import Table from "@mui/material/Table";
@@ -74,7 +75,6 @@ const ApppointmentStatusPage = () => {
         .get();
 
       collectionRef.forEach((doc) => {
-        console.log("DOCUMENT DATA", doc.data());
         setAppointments((oldArray) => [
           ...oldArray,
           {
@@ -85,8 +85,6 @@ const ApppointmentStatusPage = () => {
           },
         ]);
       });
-
-      console.log(appointments);
     };
     getAppointments();
   }, []);
@@ -113,8 +111,6 @@ const ApppointmentStatusPage = () => {
               status: "pending",
             }),
           });
-
-        console.log(interval);
       }
     });
 
@@ -142,47 +138,64 @@ const ApppointmentStatusPage = () => {
       style={{ minHeight: "100vh" }}
     >
       <Box mt={-0.5} sx={{ width: "60%", position: "fixed" }}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Date</StyledTableCell>
-                <StyledTableCell>Time </StyledTableCell>
-                <StyledTableCell>Doctor name</StyledTableCell>
-                <StyledTableCell>Status</StyledTableCell>
-                <StyledTableCell>Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {appointments.map((row) => (
-                <StyledTableRow
-                  key={row.slot}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <StyledTableCell>{row.date}</StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    {row.slot}
-                  </StyledTableCell>
-                  <StyledTableCell>{row.doctor}</StyledTableCell>
-                  <StyledTableCell>{row.status}</StyledTableCell>
-                  <StyledTableCell>
-                    <IconButton
-                      onClick={() => {
-                        setDate(row.date);
-                        setDoctor(row.doctor);
-                        setToggleModal(true);
-                        setSlot(row.date);
-                        setInterval(row.slot);
-                      }}
-                    >
-                      <DeleteForeverIcon sx={{ color: pink[500] }} />
-                    </IconButton>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {appointments && appointments.length > 0 ? (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Date</StyledTableCell>
+                  <StyledTableCell>Time </StyledTableCell>
+                  <StyledTableCell>Doctor name</StyledTableCell>
+                  <StyledTableCell>Status</StyledTableCell>
+                  <StyledTableCell>Actions</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {appointments.map((row) => (
+                  <StyledTableRow
+                    key={row.slot}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <StyledTableCell>{row.date}</StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {row.slot}
+                    </StyledTableCell>
+                    <StyledTableCell>{row.doctor}</StyledTableCell>
+                    <StyledTableCell>
+                      <Chip
+                        label={row.status}
+                        color={
+                          row.status === "pending"
+                            ? "primary"
+                            : row.status === "completed"
+                            ? "success"
+                            : "error"
+                        }
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {row.status === "pending" ? (
+                        <IconButton
+                          onClick={() => {
+                            setDate(row.date);
+                            setDoctor(row.doctor);
+                            setToggleModal(true);
+                            setSlot(row.date);
+                            setInterval(row.slot);
+                          }}
+                        >
+                          <DeleteForeverIcon sx={{ color: pink[500] }} />
+                        </IconButton>
+                      ) : null}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <h2>You have no appointments yet</h2>
+        )}
       </Box>
       <BootstrapDialog
         fullWidth

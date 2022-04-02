@@ -10,11 +10,10 @@ import {
 
 import { useSelector } from "react-redux";
 
-const HomePage = () => {
+const DoctorDetails = () => {
   const { user, email } = useSelector((state) => state.userReducer);
 
   const name = user.split(" ");
-
   return (
     <Grid
       mt={10}
@@ -51,7 +50,7 @@ const HomePage = () => {
             <CardMedia
               component="img"
               sx={{ width: "70%", height: "80%", mt: 1 }}
-              image={require("../assets/pacientProfile.png")}
+              image={require("../assets/doctorProfile.png")}
               alt="Live from space album cover"
             />
           </Box>
@@ -61,4 +60,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default DoctorDetails;

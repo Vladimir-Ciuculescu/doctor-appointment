@@ -26,7 +26,6 @@ const Menu = () => {
   const navigate = useNavigate();
 
   if (user) {
-    console.log(userType);
     return (
       <Drawer
         variant="permanent"
@@ -76,7 +75,7 @@ const Menu = () => {
               </ListItem>
 
               <ListItem
-                onClick={() => navigate("/appointment-status")}
+                onClick={() => navigate("/doctor-details")}
                 button
                 key={3}
               >
